@@ -1,126 +1,114 @@
 package com.paypal.transaction_service.entity;
 
-import java.time.LocalDateTime;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.*;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 import jakarta.validation.constraints.Positive;
 
+
+
 @Entity
-@Table(name="transaction")
+@Table(name = "transaction")
+
 public class Transaction {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long id;
-	
-	@Column(name = "senderName", nullable = false)
-	private String senderName;
-	
-	@Column(name = "receiverName", nullable = false)
-	private String receiverName;
-	
-	@Column(nullable = false)
-	@Positive(message = "Amount must be positive")
-	private Double amount;
-	
-	@Column(nullable = false)
-	private LocalDateTime timestamp;
-	
-	@Column(nullable = false)
-	private String status;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	public Transaction(long id, String senderName, String receiverName,
-			@Positive(message = "Amount must be positive") Double amount, LocalDateTime timestamp, String status) {
-		super();
-		this.id = id;
-		this.senderName = senderName;
-		this.receiverName = receiverName;
-		this.amount = amount;
-		this.timestamp = timestamp;
-		this.status = status;
-	}
-	
-	public void prePersist() {
-		if(timestamp == null)
-			timestamp = LocalDateTime.now();
-		
-		if(status == null)
-			status = "PENDING";
-	}
+    @Column(nullable = false)
+    private Long senderId;
 
-//	Getters and Setters
-	public long getId() {
-		return id;
-	}
+    @Column(nullable = false)
+    private Long receiverId;
 
-	public void setId(long id) {
-		this.id = id;
-	}
 
-	public String getSenderName() {
-		return senderName;
-	}
+    @Column(nullable = false)
+    @Positive(message = "Amount must be positive")
+    private Double amount;
 
-	public void setSenderName(String senderName) {
-		this.senderName = senderName;
-	}
+    @Column(nullable = false)
+    private LocalDateTime timestamp;
 
-	public String getReceiverName() {
-		return receiverName;
-	}
+    @Column(nullable = false)
+    private String status;
 
-	public void setReceiverName(String receiverName) {
-		this.receiverName = receiverName;
-	}
+    public Transaction() {}
 
-	public Double getAmount() {
-		return amount;
-	}
+    public Transaction(Long senderId, Long receiverId,
+                       String senderNameSnapshot, String receiverNameSnapshot,
+                       Double amount, LocalDateTime timestamp, String status) {
+        this.senderId = senderId;
+        this.receiverId = receiverId;
+        this.amount = amount;
+        this.timestamp = timestamp;
+        this.status = status;
+    }
 
-	public void setAmount(Double amount) {
-		this.amount = amount;
-	}
+    @PrePersist
+    public void prePersist() {
+        if (timestamp == null) {
+            timestamp = LocalDateTime.now();
+        }
+        if (status == null) {
+            status = "PENDING";
+        }
+    }
 
-	public LocalDateTime getTimestamp() {
-		return timestamp;
-	}
+    // Getters and setters
+    public Long getId() {
+        return id;
+    }
 
-	public void setTimestamp(LocalDateTime timestamp) {
-		this.timestamp = timestamp;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public String getStatus() {
-		return status;
-	}
+    public Long getSenderId() {
+        return senderId;
+    }
+    public void setSenderId(Long senderId) {
+        this.senderId = senderId;
+    }
 
-	public void setStatus(String status) {
-		this.status = status;
-	}
+    public Long getReceiverId() {
+        return receiverId;
+    }
+    public void setReceiverId(Long receiverId) {
+        this.receiverId = receiverId;
+    }
 
-	@Override
-	public String toString() {
-		return "Transaction [id=" + id + ", senderName=" + senderName + ", receiverName=" + receiverName + ", amount="
-				+ amount + ", timestamp=" + timestamp + ", status=" + status + "]";
-	}
-	
-	
+    public Double getAmount() {
+        return amount;
+    }
+    public void setAmount(Double amount) {
+        this.amount = amount;
+    }
+
+    public LocalDateTime getTimestamp() {
+        return timestamp;
+    }
+    public void setTimestamp(LocalDateTime timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    @Override
+    public String toString() {
+        return "Transaction{" +
+                "id=" + id +
+                ", senderId=" + senderId +
+                ", receiverId=" + receiverId +
+                ", amount=" + amount +
+                ", timestamp=" + timestamp +
+                ", status='" + status + '\'' +
+                '}';
+    }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
